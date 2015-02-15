@@ -15,7 +15,7 @@ class Business {
     var numReviews: Int?
     var address: String?
     var categories: String?
-    var distance: Int?
+    var distance: CGFloat?
     
     init(fromDictionary: NSDictionary) {
         self.imageUrl = fromDictionary["image_url"] as? String
@@ -34,7 +34,9 @@ class Business {
         var neighborhood: String = fromDictionary.valueForKeyPath("location.neighborhoods")![0] as String
         self.address = "\(street), \(neighborhood)"
         
-        self.distance = 50 // fromDictionary["distance"] as? Int
+        var metersPerMile: CGFloat = 0.000621371
+
+        self.distance = metersPerMile * (fromDictionary["distance"] as? CGFloat)!
     }
     
     class func businessesWithDictionaries(dictionaries: NSArray) -> NSArray {

@@ -47,6 +47,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             var businessesDict = response["businesses"] as NSArray
             self.businesses = Business.businessesWithDictionaries(businessesDict)
             self.tableView.reloadData()
+            print(businessesDict)
         }) { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
             println(error)
         }

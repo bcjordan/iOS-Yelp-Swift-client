@@ -39,7 +39,7 @@ class BusinessCellTableViewCell: UITableViewCell {
         self.ratingImageView.setImageWithURL(NSURL(string: newBusiness.ratingImageUrl!))
         self.ratingLabel.text = "\(newBusiness.numReviews!) reviews"
         self.addressLabel.text = "\(newBusiness.address!)"
-        self.distanceLabel.text = "\(newBusiness.distance!) miles"
+        self.distanceLabel.text =  NSString(format: "%.2f mi", newBusiness.distance!)
     }
     
 }
