@@ -24,6 +24,10 @@ class BusinessCellTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+        self.nameLabel.preferredMaxLayoutWidth = self.nameLabel.frame.size.width
+        self.thumbImageView.layer.cornerRadius = 5
+        self.thumbImageView.clipsToBounds = true
     }
 
     override func setSelected(selected: Bool, animated: Bool) {
@@ -39,7 +43,13 @@ class BusinessCellTableViewCell: UITableViewCell {
         self.ratingImageView.setImageWithURL(NSURL(string: newBusiness.ratingImageUrl!))
         self.ratingLabel.text = "\(newBusiness.numReviews!) reviews"
         self.addressLabel.text = "\(newBusiness.address!)"
-        self.distanceLabel.text =  NSString(format: "%.2f mi", newBusiness.distance!)
+        self.distanceLabel.text =  "\(round(newBusiness.distance! * 100) / 100) mi"
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        self.nameLabel.preferredMaxLayoutWidth = self.nameLabel.frame.size.width
+
     }
     
 }
