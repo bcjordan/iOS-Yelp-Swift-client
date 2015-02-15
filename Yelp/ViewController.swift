@@ -8,7 +8,9 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+    @IBOutlet weak var tableView: UITableView!
+    
     var client: YelpClient!
     var businesses: NSArray?
     
@@ -36,16 +38,37 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.title = "Yelp"
         // Do any additional setup after loading the view, typically from a nib.
         client = YelpClient(consumerKey: yelpConsumerKey, consumerSecret: yelpConsumerSecret, accessToken: yelpToken, accessSecret: yelpTokenSecret)
         
         client.searchWithTerm("Thai", success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             var businessesDict = response["businesses"] as NSArray
             self.businesses = Business.businessesWithDictionaries(businessesDict)
+            self.tableView.reloadData()
         }) { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
             println(error)
         }
     }
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        var cell = self.tableView.dequeueReusableCellWithIdentifier("businesscell") as BusinessCellTableViewCell
+        cell.setBusiness(self.businesses![indexPath.row] as Business)
+        
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        
+        return cell
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if self.businesses == nil {
+            return 0
+        }
+        return self.businesses!.count
+    }
+    
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

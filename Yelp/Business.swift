@@ -34,14 +34,13 @@ class Business {
         var neighborhood: String = fromDictionary.valueForKeyPath("location.neighborhoods")![0] as String
         self.address = "\(street), \(neighborhood)"
         
-        self.distance = fromDictionary["distance"] as? Int
+        self.distance = 50 // fromDictionary["distance"] as? Int
     }
     
     class func businessesWithDictionaries(dictionaries: NSArray) -> NSArray {
         var businesses = NSMutableArray()
         for businessDictionary in dictionaries {
             var newBusiness = Business(fromDictionary: businessDictionary as NSDictionary)
-            newBusiness.address = businessDictionary["address"] as? String
             businesses.addObject(newBusiness)
         }
         return businesses
