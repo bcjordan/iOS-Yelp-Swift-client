@@ -10,6 +10,7 @@ import UIKit
 
 class ViewController: UIViewController {
     var client: YelpClient!
+    var businesses: NSArray?
     
     // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
     // Place your keys in secrets.plist
@@ -39,7 +40,8 @@ class ViewController: UIViewController {
         client = YelpClient(consumerKey: yelpConsumerKey, consumerSecret: yelpConsumerSecret, accessToken: yelpToken, accessSecret: yelpTokenSecret)
         
         client.searchWithTerm("Thai", success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
-            println(response)
+            var businessesDict = response["businesses"] as NSArray
+            self.businesses = Business.businessesWithDictionaries(businessesDict)
         }) { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
             println(error)
         }
