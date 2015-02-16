@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
     @IBOutlet weak var tableView: UITableView!
     
     var client: YelpClient!
@@ -20,6 +20,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     var yelpConsumerSecret: String?
     var yelpToken: String?
     var yelpTokenSecret: String?
+    var yelpClient: YelpClient?
     
     required init(coder aDecoder: NSCoder) {
         var myDict: NSDictionary?
@@ -41,16 +42,36 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         
         self.title = "Yelp"
         // Do any additional setup after loading the view, typically from a nib.
-        client = YelpClient(consumerKey: yelpConsumerKey, consumerSecret: yelpConsumerSecret, accessToken: yelpToken, accessSecret: yelpTokenSecret)
+        self.yelpClient = YelpClient(consumerKey: yelpConsumerKey, consumerSecret: yelpConsumerSecret, accessToken: yelpToken, accessSecret: yelpTokenSecret)
         
-        client.searchWithTerm("Thai", success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
+        self.updateSearchWithParams(["term": "thai", "ll": "37.774866,-122.394556"])
+        
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Filter", style: UIBarButtonItemStyle.Plain, target: self, action: "onFilterButton")
+    }
+    
+    func updateSearchWithParams(params: [String: String]) {
+        self.yelpClient!.searchWithTerm(params, success: { (operation: AFHTTPRequestOperation!, response: AnyObject!) -> Void in
             var businessesDict = response["businesses"] as NSArray
             self.businesses = Business.businessesWithDictionaries(businessesDict)
             self.tableView.reloadData()
-            print(businessesDict)
-        }) { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
-            println(error)
+            }) { (operation: AFHTTPRequestOperation!, error: NSError!) -> Void in
+                println(error)
         }
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "openFilterView" {
+            let filtersViewController = segue.destinationViewController as FiltersViewController
+            filtersViewController.delegate = self
+        }
+    }
+    
+    func onFilterButton() {
+        self.performSegueWithIdentifier("openFilterView", sender: self)
+//        var vc: FiltersViewController = FiltersViewController()
+//        var nvc: UINavigationController = UINavigationController(rootViewController: vc)
+//        vc.delegate = self
+//        self.presentViewController(nvc, animated: true, completion: nil)
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -69,11 +90,17 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         return self.businesses!.count
     }
     
-    
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    
+    // FiltersViewControllerDelegate
+    
+    func filtersViewController(filtersViewController: FiltersViewController, filters: [String: String]) {
+
+        self.updateSearchWithParams(filters)
     }
 }
 
