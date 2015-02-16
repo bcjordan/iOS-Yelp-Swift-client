@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, FiltersViewControllerDelegate, UISearchBarDelegate {
     @IBOutlet weak var tableView: UITableView!
     
     var client: YelpClient!
@@ -40,13 +40,23 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.title = "Yelp"
+        
         // Do any additional setup after loading the view, typically from a nib.
         self.yelpClient = YelpClient(consumerKey: yelpConsumerKey, consumerSecret: yelpConsumerSecret, accessToken: yelpToken, accessSecret: yelpTokenSecret)
         
         self.updateSearchWithParams(["term": "thai", "ll": "37.774866,-122.394556"])
         
+        var searchBar = UISearchBar()
+        searchBar.delegate = self
+        searchBar.text = ""
+        self.navigationItem.titleView = searchBar
+            
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Filter", style: UIBarButtonItemStyle.Plain, target: self, action: "onFilterButton")
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        self.updateSearchWithParams(["term": searchBar.text, "ll": "37.774866,-122.394556"])
+        searchBar.resignFirstResponder()
     }
     
     func updateSearchWithParams(params: [String: String]) {

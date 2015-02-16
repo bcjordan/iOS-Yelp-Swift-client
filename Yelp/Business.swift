@@ -23,10 +23,10 @@ class Business {
         self.ratingImageUrl = fromDictionary["rating_img_url"] as? String
         self.numReviews = fromDictionary["review_count"] as? Int
 
-        var categoryArray = fromDictionary["categories"]?[0] as? NSArray
+        var categoryArray = fromDictionary["categories"] as? NSArray
         var categoriesStrings: [String] = []
         for category in categoryArray! {
-            categoriesStrings.append(category as String)
+            categoriesStrings.append(category[0] as String)
         }
         self.categories = ", ".join(categoriesStrings)
         

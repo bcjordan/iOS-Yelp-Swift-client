@@ -44,6 +44,7 @@ class BusinessCellTableViewCell: UITableViewCell {
         self.ratingLabel.text = "\(newBusiness.numReviews!) reviews"
         self.addressLabel.text = "\(newBusiness.address!)"
         self.distanceLabel.text =  "\(round(newBusiness.distance! * 100) / 100) mi"
+        self.categoryLabel.text = "\(newBusiness.categories!)"
     }
     
     override func layoutSubviews() {
